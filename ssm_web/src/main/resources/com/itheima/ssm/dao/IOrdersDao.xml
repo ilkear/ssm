@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.ssm.dao.IOrdersDao">
+    <resultMap id="orderMap" type="com.itheima.ssm.domain.Orders">
+        <id column="ID" property="id"/>
+        <result column="ORDERTIME" property="orderTime"/>
+        <result column="ORDERNUM" property="orderNum"/>
+        <result column="PEOPLECOUNT" property="peopleCount"/>
+        <result column="ORDERDESC" property="orderDesc"/>
+        <result column="PAYTYPE" property="payType"/>
+        <result column="ORDERSTATUS" property="orderStatus"/>
+        <!--<association property="product" resultMap="com.itheima.ssm.dao.IProductDao.productMap"/>-->
+        <association property="product" column="PRODUCTID" select="com.itheima.ssm.dao.IProductDao.findById"/>
+        <!--<association property="product" javaType="com.itheima.ssm.domain.Product">
+            <result column="CITYNAME" property="cityName"/>
+            <result column="PRODUCTNAME" property="productName"/>
+            <result column="DEPARTURETIME" property="departureTime"/>
+            <result column="PRODUCTPRICE" property="productPrice"/>
+        </association>-->
+        <association property="member" column="MEMBERID" select="com.itheima.ssm.dao.IMemberDao.findById"/>
+        <!--<association property="member" javaType="member">
+            <result column="NAME" property="name"/>
+            <result column="NICKNAME" property="nickname"/>
+            <result column="EMAIL" property="email"/>
+            <result column="PHONENUM" property="phoneNum"/>
+        </association>-->
+        <collection property="travellers" column="ID" select="com.itheima.ssm.dao.ITravellerDao.findByOrdersId"/>
+        <!--<collection property="travellers" ofType="traveller">
+            <result column="NAME" property="name"/>
+            <result column="PHONENUM" property="phoneNum"/>
+            <result column="SEX" property="sex"/>
+            <result column="CREDENTIALSNUM" property="credentialsNum"/>
+            <result column="CREDENTIALSTYPE" property="credentialsType"/>
+        </collection>-->
+    </resultMap>
+    <select id="findById" parameterType="String" resultMap="orderMap">
+        select * from orders where id=#{ordersId}
+    </select>
+    <!--<select id="findById" parameterType="String" resultMap="orderMap">
+        select o.ID,o.ORDERNUM,o.ORDERTIME,o.PEOPLECOUNT,o.ORDERDESC,
+               o.ORDERSTATUS,o.PAYTYPE,
+               p.CITYNAME,p.PRODUCTNAME,p.DEPARTURETIME,p.PRODUCTPRICE,
+               m.NAME,m.NICKNAME,m.EMAIL,m.PHONENUM,
+               t.NAME,t.PHONENUM,t.SEX,t.CREDENTIALSNUM,t.CREDENTIALSTYPE
+        from orders o,order_traveller ot,traveller t,product p,member m
+        where o.id=ot.orderid
+          and ot.travellerid=t.id
+          and o.productid=p.id
+          and o.memberid=m.id
+          and o.id=#{id}
+    </select>-->
+</mapper>
